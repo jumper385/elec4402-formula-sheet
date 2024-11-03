@@ -16,8 +16,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up TeX Live
-      uses: latex-actions/setup-texlive@v2
+    - name: Install TeX Live Full
+      run: sudo apt-get update && sudo apt-get install -y texlive-full
 
     - name: Compile LaTeX with latexmk
       run: latexmk -pdf -quiet -interaction=nonstopmode main.tex
