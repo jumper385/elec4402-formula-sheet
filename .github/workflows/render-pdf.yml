@@ -21,12 +21,12 @@ jobs:
 #    - name: Install TeX Live Full
 #      run: sudo apt-get update && sudo apt-get install -y texlive-full
 
-#    - name: Install TeX Live Essentials
-#      run: |
-#        sudo apt-get update
-#        sudo apt-get install -y \
-#          texlive-latex-base \
-#          latexmk
+    - name: Install TeX Live Essentials
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          texlive-latex-base \
+          latexmk
 
     - name: make fake file
       run: |
