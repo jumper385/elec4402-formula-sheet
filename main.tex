@@ -396,8 +396,11 @@ where:
 \subsection{Calulating BER or Matched Filters}
 To calcualte the bit error rate of matched filters, you will need to derive $d^2$ from scratch. This is where the following comes into play:
 \[
-    d^2 = \int_{-\infty}^{\infty}\left|s_1(t) - s_2(t)\right|^2\,dt
+    d^2 = \int_{-\infty}^{\infty}\underbrace{\left|{s_1(t) - s_2(t)}_\right|^2}_{|\text{matched filter}|^2}\,dt
 \]
+In this case, the piecewise function of the matched filter $h(t)$ can be substituted into the function. 
+
+To calculate the BER, make sure to also have a target bit rate $R_b$ usually stated in the question/problem. Remember that $T_b = 1/R_b$
 
 \section{Entropy}
 \[
