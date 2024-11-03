@@ -1,0 +1,31 @@
+name: Compile LaTeX Document
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up TeX Live
+      uses: latex-actions/setup-texlive@v2
+
+    - name: Compile LaTeX with latexmk
+      run: latexmk -pdf -quiet -interaction=nonstopmode main.tex
+      # Replace 'main.tex' with the name of your LaTeX file
+
+    - name: Upload PDF artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: compiled-pdf
+        path: elec4402-formula-sheet.pdf
+        # Replace 'main.pdf' with the name of the output PDF file
