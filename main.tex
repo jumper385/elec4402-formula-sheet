@@ -385,6 +385,104 @@ where:
     \item Each delta function at \( f = \frac{k}{T} \) represents an impulse in the spectrum, showing periodic repetition at multiples of the symbol rate \( \frac{1}{T} \).
 \end{itemize}
 
+\section{Symbol Distance and Basis Functions}
+Basis functions play a critical role in transforming vector spaces into a form that facilitates simpler calculations, especially for distance metrics. By mapping an $n$-dimensional vector space into an $n$-dimensional Euclidean space, each axis becomes orthogonal and has unit length. This transformation provides a clear framework for calculating distances and simplifies operations on vectors.
+
+\subsection{Mathematical Representation}
+
+Let a vector be represented in terms of basis functions as follows:
+\[
+\mathbf{v} = A \phi_1 + B \phi_2 + \ldots + Z \phi_m
+\]
+where:
+\begin{itemize}
+    \item \( \phi_i \) represents the basis functions.
+    \item \( A, B, \ldots, Z \) are scalar multiples corresponding to each basis function \( \phi_i \).
+\end{itemize}
+
+\section{Distance Calculation}
+In this representation, the Euclidean distance (or the magnitude of the vector \( \mathbf{v} \)) can be computed as:
+\[
+d = \sqrt{(A \phi_1)^2 + (B \phi_2)^2 + \ldots + (Z \phi_m)^2}
+\]
+This formula leverages the orthogonality of the basis functions, simplifying the computation of distances in the Euclidean space.
+
+\subsection{Benefits of Euclidean Transformation}
+Mapping a vector to its Euclidean representation using orthogonal basis functions offers several advantages:
+\begin{itemize}
+    \item \textbf{Simplified Distance Computation}: In a Euclidean space, the distance between points is computed using the Pythagorean theorem, which is easier and more intuitive.
+    \item \textbf{Ease of Representation}: Each vector component aligns with an orthogonal axis, allowing for straightforward interpretation and manipulation of vectors in terms of individual components.
+    \item \textbf{Application in Signal Processing}: Basis functions are often used in signal processing to break down complex signals into simpler components, facilitating analysis and processing.
+\end{itemize}
+
+In summary, basis functions enable the transformation of complex spaces into manageable Euclidean forms, making calculations like distances more intuitive and easier to compute.
+
+
+\section{Matched Filter Overview}
+A matched filter is designed to maximize the signal-to-noise ratio (SNR) at the output for a known signal in the presence of additive white Gaussian noise (AWGN). Given a signal \( s(t) \), the matched filter \( h(t) \) is defined as:
+\[
+h(t) = s(T - t)
+\]
+where \( T \) is the duration of the signal. This filter aligns with the signal \( s(t) \) and maximizes its correlation with the received signal \( r(t) = s(t) + n(t) \), thereby improving detection performance in noisy conditions.
+
+\subsection{Deriving the Matched Filter}
+The process of deriving the matched filter involves the following steps:
+\begin{enumerate}
+    \item \textbf{Maximizing SNR}: To maximize the output SNR, we choose a filter \( h(t) \) that aligns with the signal \( s(t) \).
+    \item \textbf{Impulse Response}: The impulse response \( h(t) \) that achieves this SNR maximization is \( h(t) = s(T - t) \), which is the time-reversed version of the signal.
+    \item \textbf{Convolution with Received Signal}: Convolve the received signal \( r(t) = s(t) + n(t) \) with \( h(t) \):
+    \[
+    y(t) = r(t) * h(t) = \int_{-\infty}^{\infty} r(\tau) h(t - \tau) \, d\tau
+    \]
+    \item \textbf{Decision Based on Output Peak}: Sample the output \( y(t) \) at \( t = T \). A high output value at \( t = T \) indicates the presence of \( s(t) \) in the received signal.
+\end{enumerate}
+
+\subsection{Differential Matched Filter for Binary Detection}
+A differential matched filter is commonly used for binary detection (i.e., \( M = 2 \)), where there are only two possible signals, \( s_1(t) \) and \( s_2(t) \). Instead of constructing separate matched filters for each signal, a single differential matched filter can be used, defined as:
+\[
+h(t) = s_1(T - t) - s_2(T - t)
+\]
+The differential matched filter is derived based on the following principles:
+\begin{enumerate}
+    \item \textbf{Difference Between Signals}: By taking the difference between \( s_1(t) \) and \( s_2(t) \), the filter is tuned to maximize the difference in response for the two symbols.
+    \item \textbf{Convolution and Decision Rule}: The received signal \( r(t) \) (which is either \( s_1(t) + n(t) \) or \( s_2(t) + n(t) \)) is convolved with \( h(t) \):
+    \[
+    y(t) = r(t) * h(t)
+    \]
+    This convolution produces a positive output if \( r(t) \approx s_1(t) \) and a negative output if \( r(t) \approx s_2(t) \). The detection decision can be made by simply checking the sign of \( y(T) \):
+    \[
+    \text{Detected symbol} =
+    \begin{cases}
+        s_1, & \text{if } y(T) > 0 \\
+        s_2, & \text{if } y(T) < 0
+    \end{cases}
+    \]
+\end{enumerate}
+
+\section{Matched Filter for Multiple Symbols (M-ary Detection)}
+For M-ary detection (where \( M > 2 \)), the differential matched filter approach does not generalize effectively. Instead, a separate matched filter is constructed for each symbol \( s_k(t) \) as follows:
+\[
+h_k(t) = s_k(T - t)
+\]
+To detect which symbol was transmitted:
+\begin{enumerate}
+    \item \textbf{Convolution for Each Symbol}: Convolve the received signal \( r(t) \) with each matched filter \( h_k(t) \), resulting in outputs \( y_k(T) \) for each filter.
+    \item \textbf{Decision Rule}: The transmitted symbol is determined by selecting the filter with the highest output:
+    \[
+    \hat{k} = \arg \max_{k} y_k(T)
+    \]
+\end{enumerate}
+
+\subsubsection{Why Differential Matched Filters Do Not Generalize for \( M > 2 \)}
+For binary detection (\( M = 2 \)), a differential matched filter \( h(t) = s_1(T - t) - s_2(T - t) \) works well because there are only two hypotheses, and the output sign can be used to distinguish between the two symbols. However, this approach does not generalize for \( M > 2 \) because:
+\begin{itemize}
+    \item A single differential filter cannot uniquely represent multiple symbols.
+    \item Each symbol requires a distinct matched filter for reliable identification in M-ary systems.
+\end{itemize}
+
+\subsection{Optimality of Matched Filters}
+The matched filter is optimal in Gaussian noise as it maximizes the SNR at the output, achieving maximum likelihood detection. This makes matched filtering an effective tool for symbol detection in noisy environments.
+
 \section{Bit Error Rate}
 \[
     \text{BER} = Q\left(\sqrt{\frac{d^2}{2N_o}}\right)
