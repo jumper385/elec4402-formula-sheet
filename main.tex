@@ -61,9 +61,9 @@
 \]
 
 \[
-	\text{rect}\left(\frac{t - T}{T}\right) \rightarrow
+	\text{rect}\left(\frac{t - t_0}{T}\right) \rightarrow
 	\begin{cases}
-		1, & T - \frac{T}{2} \leq t \leq T + \frac{T}{2} \\
+		1, & T - \frac{t_0}{2} \leq t \leq T + \frac{t_0}{2} \\
 		0, & \text{otherwise}
 	\end{cases}
 \]
@@ -295,14 +295,24 @@ The Nyquist Rate determines the minimum sampling rate required to accurately cap
 
 Additionally, for signals that do have higher frequency noise components, a lowpass filter is applied to the signal to band limit it --- preventing distortions to the sampled signal. The cutoff of the lowpass filter is the same as the signal's bandwidth $f_s$
 
-\subsection{Pulse Train Fourier Transform}
-The fourier transform of a periodid pulse train in the tiem domain leads to a series of impulses in the frequency domain:
+\subsection{Ideal Sampling Equation}
+\subsubsection{Time Domain Representation}
 \[
-    \sum_{m=-\infty}^{\infty} \delta(t - m T_0) \xrightarrow{\mathcal{F}T} \sum_{n=-\infty}^{\infty} \delta(f - n f_0)
+    x_p(t) = x(t) \cdot \sum_{n=-\infty}^{\infty}\delta{\left(t-nT_0\right)}
 \]
 \noindent Where:
 \begin{itemize}
-    \item $f_0=1/T_0$: is the sampling frequency of the pulse train
+    \item $T_0$: Sampling Period. Note, the sampling frequency is also $f_0=1/T_0$
+    \item $x(t)$: The original signal being sampled by the pulse train.
+\end{itemize}
+\subsubsection{Frequency Domain Representation}
+\[
+    X_s(f) = f_0 \sum_{k=-\infty}^{\infty} X(f-k f_0)
+\]
+\noindent Where:
+\begin{itemize}
+    \item $f_0$: The sampling frequency.
+    \item $X(f)$: The fourier transform of the original signal
 \end{itemize}
 
 \noindent $\therefore$ the Fourier Transform of a periodic pulse train results in a series of delta functions, representing the discrete frequency components present in the signal. The spectrm of $x(f)$ - the signal being sampled - is replicated around mulitples of $f_0$.
@@ -647,5 +657,54 @@ where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When
     \item $M$: Number of Unique Symbols
     \item $k$: Number of Bits in a Symbol
 \end{itemize}
+
+\newpage
+\appendix
+\section{Basic Fourier Transform Pairs}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c c}
+        \hline
+        \textbf{Time Function \( x(t) \)} & \textbf{Fourier Transform \( X(f) \)} \\
+        \hline
+        DC signal \( A \) & \( A \delta(f) \) \\
+        \hline
+        Rectangular pulse \( \Pi(t/\tau) \) & \( \tau \, \text{sinc}(f \tau) \) \\
+        \hline
+        Triangular pulse \( \Lambda(t/\tau) \) & \( \frac{\tau}{2} \, \text{sinc}^2\left(\frac{f \tau}{2}\right) \) \\
+        \hline
+        Decaying exponential \( e^{-\alpha t} u(t) \) & \( \frac{1}{\alpha + j2\pi f} \) \\
+        \hline
+        \( e^{-\alpha |t|} \) & \( \frac{2\alpha}{\alpha^2 + (2\pi f)^2} \) \\
+        \hline
+        Unit impulse \( \delta(t) \) & 1 \\
+        \hline
+        \( \delta(t - t_0) \) & \( e^{-j2\pi f t_0} \) \\
+        \hline
+        Sinc pulse \( \text{sinc}(2Wt) \) & \( \frac{1}{2W} \Pi\left(\frac{2}{2W}\right) \) \\
+        \hline
+        Complex sinusoid \( e^{j2\pi f_c t} \) & \( \delta(f - f_c) \) \\
+        \hline
+        Sinusoid \( \sin(2\pi f_c t) \) & \( \frac{1}{2j} [\delta(f - f_c) - \delta(f + f_c)] \) \\
+        \hline
+        Sinusoid \( \cos(2\pi f_c t) \) & \( \frac{1}{2} [\delta(f - f_c) + \delta(f + f_c)] \) \\
+        \hline
+        Gaussian pulse \( e^{-\pi t^2} \) & \( e^{-\pi f^2} \) \\
+        \hline
+        \( \text{sgn}(t) \) & \( \frac{1}{j \pi f} \) \\
+        \hline
+        Unit step \( u(t) \) & \( \frac{1}{2} \delta(f) + \frac{1}{j2\pi f} \) \\
+        \hline
+        \( \frac{1}{\pi t} \) & \( -j\cdot\text{sgn}(f) \) \\
+        \hline
+        \( \delta'(t) \) & \( j2\pi f \) \\
+        \hline
+    \end{tabular}
+    \caption{Basic Fourier Transform Pairs}
+\end{table}
+
+\section{Carrier Modulation Schemes Comparisons}
+
 
 \end{document}
