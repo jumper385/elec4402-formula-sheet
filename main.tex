@@ -500,15 +500,77 @@ In this case, the piecewise function of the matched filter $h(t)$ can be substit
 
 To calculate the BER, make sure to also have a target bit rate $R_b$ usually stated in the question/problem. Remember that $T_b = 1/R_b$
 
-\section{Entropy}
+\section{Information Theory}
+\subsection{Entropy}
 \[
-	H(X) = - \sum p(x) \log_2 p(x)
+    H(p) = - \sum_{i=1}^{N} p_i \log_2(p_i)
 \]
 
-\section{Joint Entropy}
+\subsection{Joint Entropy}
 \[
 	H(X,Y) = - \sum \sum p(x,y) \log_2 p(x,y)
 \]
 
+\subsection{Weakly Symmetric Channel Capacity}
+
+The channel capacity \( C \) for a weakly symmetric channel can be defined as:
+
+\[
+    C = \log_2(N) - H(p)
+\]
+
+\noindent where:
+
+\begin{itemize}
+    \item \( N \): The number of symbols that the channel can output.
+    \item \( p \): Probability vector representing the probability distribution of symbols, which is used to calculate the symbol entropy \( H(p) \).
+\end{itemize}
+
+The term \( H(p) \) denotes the entropy of the probability distribution \( p \), and it can be expanded as follows:
+\[
+    H(p) = - \sum_{i=1}^{N} p_i \log_2(p_i)
+\]
+where $p_i$ represents the probability of each symbol $i$ in the output set. The capacity $C$ represents the maximum achievable rate of information transfer through the channel, measured in bits per symbol.
+
+\subsection{Code Rate \( R_c \)}
+
+The \textit{code rate} \( R_c \) is a measure of the efficiency of an error-correcting code. It represents the ratio of useful information to the total transmitted data, including the redundant bits added for error correction. Mathematically, the code rate \( R_c \) is defined as:
+
+\[
+    R_c = \frac{k}{n} = \frac{log_2{M}}{n}
+\]
+
+where:
+\begin{itemize}
+    \item \( k \): Number of information bits (useful data) per codeword.
+    \item \( n \): Total number of bits per codeword, which includes both information bits and redundant bits for error correction.
+    \item $m$: Number of unique symbols in the frame.
+\end{itemize}
+
+\noindent The code rate \( R_c \) ranges between 0 and 1:
+\begin{itemize}
+    \item When \( R_c = 1 \), all bits transmitted are information bits, with no redundancy, meaning no error correction is applied.
+    \item When \( R_c \) is closer to 0, a larger proportion of bits are dedicated to error correction, increasing reliability but reducing the effective data rate.
+\end{itemize}
+
+\subsubsection{Example Calculation}
+
+Consider a code with:
+\begin{itemize}
+    \item \( k = 4 \): 4 information bits per codeword
+    \item \( n = 7 \): 7 total bits per codeword (4 information bits + 3 redundant bits)
+\end{itemize}
+
+Then the code rate \( R_c \) is calculated as:
+
+\[
+R_c = \frac{4}{7} \approx 0.57
+\]
+
+This means that 57\% of the transmitted bits are information, while the remaining 43\% are used for error correction.
+
+\subsubsection{Trade-Off Between Rate and Reliability}
+
+The code rate \( R_c \) is chosen based on channel conditions. In noisy channels, a lower code rate (more redundancy) is preferred to enhance error resilience. In clear channels, a higher code rate is typically chosen to maximize data throughput.
 
 \end{document}
