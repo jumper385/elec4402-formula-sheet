@@ -29,6 +29,11 @@ jobs:
           texlive-latex-base \
           latexmk
 
+    - name: Build PDF with LaTeX
+      run: |
+        latexmk -pdf -output-directory=output main.tex
+        mv output/main.pdf main.pdf
+
     - name: Add timestamp to PDF
       run: |
         TIMESTAMP=$(date +"%Y_%m_%d-%H%M%S")
