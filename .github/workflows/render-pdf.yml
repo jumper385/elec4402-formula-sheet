@@ -19,8 +19,17 @@ jobs:
     - name: Install TeX Live Full
       run: sudo apt-get update && sudo apt-get install -y texlive-full
 
-    - name: Compile LaTeX with latexmk
-      run: latexmk -pdf -quiet -interaction=nonstopmode main.tex
+    - name: Install TeX Live Essentials
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          texlive-latex-base \
+          texlive-latex-recommended \
+          texlive-latex-extra \
+          texlive-fonts-recommended \
+          texlive-fonts-extra \
+          texlive-science \
+          latexmk
 
     - name: Upload PDF artifact
       uses: actions/upload-artifact@v3
