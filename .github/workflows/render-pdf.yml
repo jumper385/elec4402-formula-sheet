@@ -1,3 +1,5 @@
+---
+
 name: Compile LaTeX Document
 
 on:
@@ -16,8 +18,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install TeX Live Full
-      run: sudo apt-get update && sudo apt-get install -y texlive-full
+#    - name: Install TeX Live Full
+#      run: sudo apt-get update && sudo apt-get install -y texlive-full
 
     - name: Install TeX Live Essentials
       run: |
@@ -26,8 +28,15 @@ jobs:
           texlive-latex-base \
           latexmk
 
+    - name: Add timestamp to PDF
+      run: |
+        TIMESTAMP=$(date +"%Y_%m_%d-%H%M%S")
+        mv main.pdf "elec4402-formula-sheet_$TIMESTAMP.pdf"
+        echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+
     - name: Upload PDF artifact
       uses: actions/upload-artifact@v3
       with:
-        name: rendered-pdf
-        path: main.pdf
+        name: elec4402-formula-sheet_${{ env.TIMESTAMP }}.pdf
+        path: elec4402-formula-sheet_${{ env.TIMESTAMP }}.pdf
+        if-no-files-found: error

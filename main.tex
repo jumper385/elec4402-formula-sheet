@@ -1,14 +1,15 @@
-\documentclass[12pt]{article}
+\documentclass[10pt]{article}
 
 % Packages
 \usepackage{graphicx} % For including images
-\usepackage{amsmath}  % For math symbols and equations
+\usepackage{amsmath}  % For math stuff...
 \usepackage{amssymb}  % For additional math symbols
 \usepackage{hyperref} % For hyperlinks
 \usepackage{geometry} % For adjusting margins
 \usepackage{fancyhdr} % For header and footer customization
 \usepackage{lastpage} % For referencing the last page number
 \usepackage{titlesec} % For access to section titles in the header
+\usepackage{pdflscape}
 \geometry{margin=1in} % Set margin size
 
 % Title
@@ -61,9 +62,9 @@
 \]
 
 \[
-	\text{rect}\left(\frac{t - T}{T}\right) \rightarrow
+	\text{rect}\left(\frac{t - t_0}{T}\right) \rightarrow
 	\begin{cases}
-		1, & T - \frac{T}{2} \leq t \leq T + \frac{T}{2} \\
+		1, & T - \frac{t_0}{2} \leq t \leq T + \frac{t_0}{2} \\
 		0, & \text{otherwise}
 	\end{cases}
 \]
@@ -234,7 +235,7 @@ Base-Band Frequency of a Signal:
 	f(t) = f_c + k_f m(t)
 \]
 
-\section*{Power Spectral Density (PSD)}
+\section{Power Spectral Density (PSD)}
 \[
 	G(f) = \lim_{T \to \infty} \frac{|X_T(f)|^2}{T}
 \]
@@ -287,14 +288,32 @@ In this case, the upconverted PSD of the signals are also equal within the bandw
 \]
 
 \section{Sampling and Quantization}
-\subsection{Pulse Train Fourier Transform}
-The fourier transform of a periodid pulse train in the tiem domain leads to a series of impulses in the frequency domain:
+\subsection{Nyquist Rate}
+The Nyquist Rate determines the minimum sampling rate required to accurately caputre the information fo a continuous-time signal without introducing aliasing.
 \[
-    \sum_{m=-\infty}^{\infty} \delta(t - m T_0) \xrightarrow{\mathcal{F}T} \sum_{n=-\infty}^{\infty} \delta(f - n f_0)
+    f_s \ge 2 \times f_{sig}
+\]
+
+Additionally, for signals that do have higher frequency noise components, a lowpass filter is applied to the signal to band limit it --- preventing distortions to the sampled signal. The cutoff of the lowpass filter is the same as the signal's bandwidth $f_s$
+
+\subsection{Ideal Sampling Equation}
+\subsubsection{Time Domain Representation}
+\[
+    x_p(t) = x(t) \cdot \sum_{n=-\infty}^{\infty}\delta{\left(t-nT_0\right)}
 \]
 \noindent Where:
 \begin{itemize}
-    \item $f_0=1/T_0$: is the sampling frequency of the pulse train
+    \item $T_0$: Sampling Period. Note, the sampling frequency is also $f_0=1/T_0$
+    \item $x(t)$: The original signal being sampled by the pulse train.
+\end{itemize}
+\subsubsection{Frequency Domain Representation}
+\[
+    X_s(f) = f_0 \sum_{k=-\infty}^{\infty} X(f-k f_0)
+\]
+\noindent Where:
+\begin{itemize}
+    \item $f_0$: The sampling frequency.
+    \item $X(f)$: The fourier transform of the original signal
 \end{itemize}
 
 \noindent $\therefore$ the Fourier Transform of a periodic pulse train results in a series of delta functions, representing the discrete frequency components present in the signal. The spectrm of $x(f)$ - the signal being sampled - is replicated around mulitples of $f_0$.
@@ -348,15 +367,381 @@ where:
     \item \( M \): Number of distinct symbols in the signal set, with \( M = 2^k \), so that each symbol represents \( k = \log_2 M \) bits.
 \end{itemize}
 
-\section{Entropy}
+\section{Spectra of Linearly Modulated Digital Signals}
+
+\subsection{Signal Model}
+The signal \( s(t) \) for a linearly modulated digital signal is given by:
 \[
-	H(X) = - \sum p(x) \log_2 p(x)
+s(t) = \sum_{n=-\infty}^{\infty} A_n V(t + \Delta - nT)
+\]
+where:
+\begin{itemize}
+    \item \( A_n \): Sequence of scalar symbols (data).
+    \item \( V(t) \): Pulse shape (basis function).
+    \item \( T \): Symbol period.
+    \item \( \Delta \): Random channel delay, uniformly distributed over \( [0, T] \).
+\end{itemize}
+
+\subsection{Power Spectral Density (PSD)}
+The Power Spectral Density \( G(f) \) of \( s(t) \) is:
+\[
+G(f) = \frac{|V(f)|^2}{T} \sum_{\ell=-\infty}^{\infty} R(\ell) e^{-j 2 \pi f T \ell}
+\]
+where:
+\begin{itemize}
+    \item \( |V(f)|^2 \): Magnitude squared of the Fourier Transform of \( V(t) \).
+    \item \( R(\ell) \): Autocorrelation function of the sequence \( \{A_n\} \) at lag \( \ell \).
+    \item \( e^{-j 2 \pi f T \ell} \): Frequency shift term.
+\end{itemize}
+
+\subsection{Frequency Domain Summation of Delta Functions}
+The periodic nature of the spectrum due to sampling can be represented as:
+\[
+\sum_{\ell=-\infty}^{\infty} e^{-j 2 \pi f T \ell} = \frac{1}{T} \sum_{k=-\infty}^{\infty} \delta \left(f - \frac{k}{T}\right)
+\]
+where:
+\begin{itemize}
+    \item Each delta function at \( f = \frac{k}{T} \) represents an impulse in the spectrum, showing periodic repetition at multiples of the symbol rate \( \frac{1}{T} \).
+\end{itemize}
+
+\section{Symbol Distance and Basis Functions}
+Basis functions play a critical role in transforming vector spaces into a form that facilitates simpler calculations, especially for distance metrics. By mapping an $n$-dimensional vector space into an $n$-dimensional Euclidean space, each axis becomes orthogonal and has unit length. This transformation provides a clear framework for calculating distances and simplifies operations on vectors.
+
+\subsection{Mathematical Representation}
+
+Let a vector be represented in terms of basis functions as follows:
+\[
+\mathbf{v} = A \phi_1 + B \phi_2 + \ldots + Z \phi_m
+\]
+where:
+\begin{itemize}
+    \item \( \phi_i \) represents the basis functions.
+    \item \( A, B, \ldots, Z \) are scalar multiples corresponding to each basis function \( \phi_i \).
+\end{itemize}
+
+\section{Distance Calculation}
+In this representation, the Euclidean distance (or the magnitude of the vector \( \mathbf{v} \)) can be computed as:
+\[
+d = \sqrt{(A \phi_1)^2 + (B \phi_2)^2 + \ldots + (Z \phi_m)^2}
+\]
+This formula leverages the orthogonality of the basis functions, simplifying the computation of distances in the Euclidean space.
+
+\subsection{Benefits of Euclidean Transformation}
+Mapping a vector to its Euclidean representation using orthogonal basis functions offers several advantages:
+\begin{itemize}
+    \item \textbf{Simplified Distance Computation}: In a Euclidean space, the distance between points is computed using the Pythagorean theorem, which is easier and more intuitive.
+    \item \textbf{Ease of Representation}: Each vector component aligns with an orthogonal axis, allowing for straightforward interpretation and manipulation of vectors in terms of individual components.
+    \item \textbf{Application in Signal Processing}: Basis functions are often used in signal processing to break down complex signals into simpler components, facilitating analysis and processing.
+\end{itemize}
+
+In summary, basis functions enable the transformation of complex spaces into manageable Euclidean forms, making calculations like distances more intuitive and easier to compute.
+
+
+\section{Matched Filter Overview}
+A matched filter is designed to maximize the signal-to-noise ratio (SNR) at the output for a known signal in the presence of additive white Gaussian noise (AWGN). Given a signal \( s(t) \), the matched filter \( h(t) \) is defined as:
+\[
+h(t) = s(T - t)
+\]
+where \( T \) is the duration of the signal. This filter aligns with the signal \( s(t) \) and maximizes its correlation with the received signal \( r(t) = s(t) + n(t) \), thereby improving detection performance in noisy conditions.
+
+\subsection{Deriving the Matched Filter}
+The process of deriving the matched filter involves the following steps:
+\begin{enumerate}
+    \item \textbf{Maximizing SNR}: To maximize the output SNR, we choose a filter \( h(t) \) that aligns with the signal \( s(t) \).
+    \item \textbf{Impulse Response}: The impulse response \( h(t) \) that achieves this SNR maximization is \( h(t) = s(T - t) \), which is the time-reversed version of the signal.
+    \item \textbf{Convolution with Received Signal}: Convolve the received signal \( r(t) = s(t) + n(t) \) with \( h(t) \):
+    \[
+    y(t) = r(t) * h(t) = \int_{-\infty}^{\infty} r(\tau) h(t - \tau) \, d\tau
+    \]
+    \item \textbf{Decision Based on Output Peak}: Sample the output \( y(t) \) at \( t = T \). A high output value at \( t = T \) indicates the presence of \( s(t) \) in the received signal.
+\end{enumerate}
+
+\subsection{Differential Matched Filter for Binary Detection}
+A differential matched filter is commonly used for binary detection (i.e., \( M = 2 \)), where there are only two possible signals, \( s_1(t) \) and \( s_2(t) \). Instead of constructing separate matched filters for each signal, a single differential matched filter can be used, defined as:
+\[
+h(t) = s_1(T - t) - s_2(T - t)
+\]
+The differential matched filter is derived based on the following principles:
+\begin{enumerate}
+    \item \textbf{Difference Between Signals}: By taking the difference between \( s_1(t) \) and \( s_2(t) \), the filter is tuned to maximize the difference in response for the two symbols.
+    \item \textbf{Convolution and Decision Rule}: The received signal \( r(t) \) (which is either \( s_1(t) + n(t) \) or \( s_2(t) + n(t) \)) is convolved with \( h(t) \):
+    \[
+    y(t) = r(t) * h(t)
+    \]
+    This convolution produces a positive output if \( r(t) \approx s_1(t) \) and a negative output if \( r(t) \approx s_2(t) \). The detection decision can be made by simply checking the sign of \( y(T) \):
+    \[
+    \text{Detected symbol} =
+    \begin{cases}
+        s_1, & \text{if } y(T) > 0 \\
+        s_2, & \text{if } y(T) < 0
+    \end{cases}
+    \]
+\end{enumerate}
+
+\subsection{Matched Filter for Multiple Symbols (M-ary Detection)}
+For M-ary detection (where \( M > 2 \)), the differential matched filter approach does not generalize effectively. Instead, a separate matched filter is constructed for each symbol \( s_k(t) \) as follows:
+\[
+h_k(t) = s_k(T - t)
+\]
+To detect which symbol was transmitted:
+\begin{enumerate}
+    \item \textbf{Convolution for Each Symbol}: Convolve the received signal \( r(t) \) with each matched filter \( h_k(t) \), resulting in outputs \( y_k(T) \) for each filter.
+    \item \textbf{Decision Rule}: The transmitted symbol is determined by selecting the filter with the highest output:
+    \[
+    \hat{k} = \arg \max_{k} y_k(T)
+    \]
+\end{enumerate}
+
+
+\subsubsection{Why Differential Matched Filters Do Not Generalize for \( M > 2 \)}
+For binary detection (\( M = 2 \)), a differential matched filter \( h(t) = s_1(T - t) - s_2(T - t) \) works well because there are only two hypotheses, and the output sign can be used to distinguish between the two symbols. However, this approach does not generalize for \( M > 2 \) because:
+\begin{itemize}
+    \item A single differential filter cannot uniquely represent multiple symbols.
+    \item Each symbol requires a distinct matched filter for reliable identification in M-ary systems.
+\end{itemize}
+
+\subsection{Optimality of Matched Filters}
+The matched filter is optimal in Gaussian noise as it maximizes the SNR at the output, achieving maximum likelihood detection. This makes matched filtering an effective tool for symbol detection in noisy environments.
+
+\section{Bit Error Rate}
+\[
+    \text{BER} = Q\left(\sqrt{\frac{d^2}{2N_o}}\right)
+\]
+\begin{itemize}
+    \item $d$: The average distance between symbols. 
+    \item $N_o$: Noise Figure
+\end{itemize}
+\subsection{Calulating BER or Matched Filters}
+To calcualte the bit error rate of matched filters, you will need to derive $d^2$ from scratch. This is where the following comes into play:
+\[
+    d^2 = \int_{-\infty}^{\infty} \underbrace{\left|s_1(t) - s_2(t)\right| ^2}_{|\text{matched filter}|^2}\,dt
+\]
+In this case, the piecewise function of the matched filter $h(t)$ can be substituted into the function. 
+
+To calculate the BER, make sure to also have a target bit rate $R_b$ usually stated in the question/problem. Remember that $T_b = 1/R_b$
+
+\section{Information Theory}
+\subsection{Entropy}
+\[
+    H(p) = - \sum_{i=1}^{N} p_i \log_2(p_i)
 \]
 
-\section{Joint Entropy}
+\subsection{Joint Entropy}
 \[
 	H(X,Y) = - \sum \sum p(x,y) \log_2 p(x,y)
 \]
 
+\subsection{Weakly Symmetric Channel Capacity}
+
+The channel capacity \( C \) for a weakly symmetric channel can be defined as:
+
+\[
+    C = \log_2(N) - H(p)
+\]
+
+\noindent where:
+
+\begin{itemize}
+    \item \( N \): The number of symbols that the channel can output.
+    \item \( p \): Probability vector representing the probability distribution of symbols, which is used to calculate the symbol entropy \( H(p) \).
+\end{itemize}
+
+The term \( H(p) \) denotes the entropy of the probability distribution \( p \), and it can be expanded as follows:
+\[
+    H(p) = - \sum_{i=1}^{N} p_i \log_2(p_i)
+\]
+where $p_i$ represents the probability of each symbol $i$ in the output set. The capacity $C$ represents the maximum achievable rate of information transfer through the channel, measured in bits per symbol.
+
+\subsection{Code Rate \( R_c \)}
+
+The \textit{code rate} \( R_c \) is a measure of the efficiency of an error-correcting code. It represents the ratio of useful information to the total transmitted data, including the redundant bits added for error correction. Mathematically, the code rate \( R_c \) is defined as:
+
+\[
+    R_c = \frac{k}{n} = \frac{log_2{M}}{n}
+\]
+
+where:
+\begin{itemize}
+    \item \( k \): Number of information bits (useful data) per codeword.
+    \item \( n \): Total number of bits per codeword, which includes both information bits and redundant bits for error correction.
+    \item $m$: Number of unique symbols in the frame.
+\end{itemize}
+
+\noindent The code rate \( R_c \) ranges between 0 and 1:
+\begin{itemize}
+    \item When \( R_c = 1 \), all bits transmitted are information bits, with no redundancy, meaning no error correction is applied.
+    \item When \( R_c \) is closer to 0, a larger proportion of bits are dedicated to error correction, increasing reliability but reducing the effective data rate.
+\end{itemize}
+
+\subsubsection{Example Calculation}
+
+Consider a code with:
+\begin{itemize}
+    \item \( k = 4 \): 4 information bits per codeword
+    \item \( n = 7 \): 7 total bits per codeword (4 information bits + 3 redundant bits)
+\end{itemize}
+
+Then the code rate \( R_c \) is calculated as:
+
+\[
+R_c = \frac{4}{7} \approx 0.57
+\]
+
+This means that 57\% of the transmitted bits are information, while the remaining 43\% are used for error correction.
+
+\subsubsection{Trade-Off Between Rate and Reliability}
+
+The code rate \( R_c \) is chosen based on channel conditions. In noisy channels, a lower code rate (more redundancy) is preferred to enhance error resilience. In clear channels, a higher code rate is typically chosen to maximize data throughput.
+
+\section{Intersymbol Interference (ISI) Channels}
+Intersymbol Interference (ISI) occurs in communication channels when signal reflections, multipath propagation, or channel bandwidth limitations cause multiple instances of the same signal to arrive at different times. These delayed versions of the transmitted signal interfere with each other, causing distortion in the received signal. This interference results in a "smearing" or "smoothening" of the signal, where symbols are no longer distinguishable, leading to errors in symbol detection.
+
+\subsection{Causes and Effects of ISI}
+ISI can arise due to several physical and design-related factors, including:
+\begin{itemize}
+    \item \textbf{Multipath Propagation}: In wireless communication, signals may take multiple paths to reach the receiver due to reflections off buildings, the ground, or other obstacles. Each path has a different delay, causing overlapping symbols at the receiver.
+    \item \textbf{Limited Channel Bandwidth}: When the channel bandwidth is insufficient to pass the full frequency range of the transmitted signal, it leads to signal distortion. Sharp transitions in the signal are "rounded," resulting in spreading that overlaps with adjacent symbols.
+    \item \textbf{Reflection in Wired Media}: In wired channels, such as coaxial cables or twisted-pair lines, reflections can occur due to impedance mismatches at connectors, which send portions of the signal back along the path, causing interference with subsequent symbols.
+\end{itemize}
+
+To mitigate ISI, the transmitted signal must be shaped or designed such that it does not interfere with adjacent symbols at the sampling instants. This can be achieved by designing the system so that the received pulse shape \( p_r(t) \) has zero crossings at all sampling instants other than its own, i.e., \( p_r[n] = 0 \) for \( n \neq 0 \).
+
+\subsection{Nyquist Criterion for ISI-Free Channels}
+A channel is considered ISI-free if it satisfies the \textbf{Nyquist Criterion}. This criterion ensures that there is no interference between adjacent symbols at the sampling instants. Specifically, for a system with symbol period \( T \), the Nyquist criterion states that the pulse shape \( P(f) \) in the frequency domain must satisfy:
+\[
+    \sum_{n=-\infty}^{\infty} \underbrace{P_r\left(f + \frac{n}{T}\right)}_{\text{folded function}} = \text{constant}, \quad |f| \le \frac{1}{2T}
+\]
+where \( P_r(f) \) is the frequency response of the received pulse \( p_r(t) \).
+
+\subsubsection{Explanation of the Nyquist Criterion}
+The Nyquist criterion requires that the combined, ``folded'' frequency response of the channel and the pulse shape does not vary within the frequency band \( |f| \le \frac{1}{2T} \). This folding (summation over shifted frequency bands) is necessary because the bandwidth of a symbol is repeated periodically in the frequency domain due to sampling. By ensuring that this folded spectrum is constant, the Nyquist criterion guarantees that there is no ISI at the sampling instants.
+
+\subsubsection{Practical Interpretation}
+If the Nyquist criterion is satisfied, The symbols at the receiver will not interfere with each other, as each pulse \( p_r(t) \) has zero crossings at the sampling instants of other symbols.
+
+To achieve an ISI-free channel, practical pulse shapes, such as the \textbf{raised cosine pulse}, are often used because they satisfy the Nyquist criterion in practical systems.
+
+\subsection{Raised Cosine Filtering}
+One commonly used pulse that satisfies the Nyquist criterion is the \textbf{raised cosine pulse}. The raised cosine filter has a roll-off factor \( \alpha \) that controls the excess bandwidth, making it a flexible choice for designing ISI-free systems. The frequency response of the raised cosine filter is given by:
+\[
+P(f) =
+\begin{cases}
+T, & |f| \le \frac{1 - \alpha}{2T} \\
+\frac{T}{2} \left[ 1 + \cos\left( \frac{\pi T}{\alpha} \left( |f| - \frac{1 - \alpha}{2T} \right) \right) \right], & \frac{1 - \alpha}{2T} < |f| \le \frac{1 + \alpha}{2T} \\
+0, & \text{otherwise}
+\end{cases}
+\]
+where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When \( \alpha = 0 \), the raised cosine filter becomes a sinc pulse, which perfectly satisfies the Nyquist criterion. As \( \alpha \) increases, the filter allows more excess bandwidth, making it more robust to timing errors and practical imperfections.
+
+\subsection{Calculating Symbol Rates}
+\[
+    D \le \frac{2W}{1 + \alpha}
+\]
+
+\noindent Where:
+\begin{itemize}
+    \item $D$: Symbol Rate
+    \item $W$: Channel Bandwidth
+    \item $\alpha$: RC Rolloff
+\end{itemize}
+
+\subsection{Calculating Bit Rate}
+\begin{align*}
+    R_b &= \log_2{M} \cdot D \\ 
+        &= k \cdot D
+\end{align*}
+
+\noindent Where:
+\begin{itemize}
+    \item $R_b$: Bit rate
+    \item $D$: Symbol Rate
+    \item $M$: Number of Unique Symbols
+    \item $k$: Number of Bits in a Symbol
+\end{itemize}
+
+\newpage
+\appendix
+\section{Basic Fourier Transform Pairs}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|c}
+        \hline
+        \textbf{Time Function \( x(t) \)} & \textbf{Fourier Transform \( X(f) \)} \\
+        \hline
+        DC signal \( A \) & \( A \delta(f) \) \\
+        \hline
+        Rectangular pulse \( \Pi(t/\tau) \) & \( \tau \, \text{sinc}(f \tau) \) \\
+        \hline
+        Triangular pulse \( \Lambda(t/\tau) \) & \( \frac{\tau}{2} \, \text{sinc}^2\left(\frac{f \tau}{2}\right) \) \\
+        \hline
+        Decaying exponential \( e^{-\alpha t} u(t) \) & \( \frac{1}{\alpha + j2\pi f} \) \\
+        \hline
+        \( e^{-\alpha |t|} \) & \( \frac{2\alpha}{\alpha^2 + (2\pi f)^2} \) \\
+        \hline
+        Unit impulse \( \delta(t) \) & 1 \\
+        \hline
+        \( \delta(t - t_0) \) & \( e^{-j2\pi f t_0} \) \\
+        \hline
+        Sinc pulse \( \text{sinc}(2Wt) \) & \( \frac{1}{2W} \Pi\left(\frac{2}{2W}\right) \) \\
+        \hline
+        Complex sinusoid \( e^{j2\pi f_c t} \) & \( \delta(f - f_c) \) \\
+        \hline
+        Sinusoid \( \sin(2\pi f_c t) \) & \( \frac{1}{2j} [\delta(f - f_c) - \delta(f + f_c)] \) \\
+        \hline
+        Sinusoid \( \cos(2\pi f_c t) \) & \( \frac{1}{2} [\delta(f - f_c) + \delta(f + f_c)] \) \\
+        \hline
+        Gaussian pulse \( e^{-\pi t^2} \) & \( e^{-\pi f^2} \) \\
+        \hline
+        \( \text{sgn}(t) \) & \( \frac{1}{j \pi f} \) \\
+        \hline
+        Unit step \( u(t) \) & \( \frac{1}{2} \delta(f) + \frac{1}{j2\pi f} \) \\
+        \hline
+        \( \frac{1}{\pi t} \) & \( -j\cdot\text{sgn}(f) \) \\
+        \hline
+        \( \delta'(t) \) & \( j2\pi f \) \\
+        \hline
+    \end{tabular}
+    \caption{Basic Fourier Transform Pairs}
+\end{table}
+
+%TODO: check correctness
+\begin{landscape}
+\section{Carrier Modulation Schemes Comparisons}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|c|c|c|c}
+        \hline
+        \textbf{Signalling} & \textbf{Null BW (Hz)} & \textbf{Abs BW (Hz)} & \textbf{BER Coherent Detection} & \textbf{BER with Envelope} \\
+        \hline
+        ASK & $2R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{E_b}{N_0}} \right)$ & $0.5 e^{-E_b / 2 N_0}$ \\
+        \hline
+        BPSK & $2R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{2 E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        Sunde's FSK & $3R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{E_b}{N_0}} \right)$ & $0.5 e^{-E_b / 2 N_0}$ \\
+        \hline
+        DBPSK & $2R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{E_b}{N_0}} \right)$ & $0.5 e^{-E_b / N_0}$ \\
+        \hline
+        \textit{M-ary Bandpass Signaling} & & & & \\
+        \hline
+        QPSK/OQPSK & $R_b$ & $\frac{R_b (1 + \alpha)}{2}$ & $Q\left( \sqrt{\frac{2 E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        MSK & $1.5 R_b$ & $\frac{3 R_b (1 + \alpha)}{4}$ & $Q\left( \sqrt{\frac{2 E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-PSK ($M > 4$) & $\frac{2 R_b}{\log_2 M}$ & $\frac{R_b (1 + \alpha)}{\log_2 M}$ & $\frac{2}{\log_2 M} Q\left( \sqrt{2 \log_2 M \sin^2 \left( \frac{\pi}{M} \right) \frac{E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-DPSK ($M > 4$) & $\frac{2 R_b}{\log_2 M}$ & $\frac{R_b (1 + \alpha)}{2 \log_2 M}$ & $\frac{2}{\log_2 M} Q\left( \sqrt{4 \log_2 M \sin^2 \left( \frac{\pi}{2M} \right) \frac{E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-QAM (Square constellation) & $\frac{2 R_b}{\log_2 M}$ & $\frac{R_b (1 + \alpha)}{\log_2 M}$ & $\frac{4}{\log_2 M} \left(1 - \frac{1}{\sqrt{M}}\right) Q\left( \sqrt{\frac{3 \log_2 M}{M - 1} \frac{E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-FSK Coherent & $\frac{(M + 3) R_b}{2 \log_2 M}$ & & $Q\left( \sqrt{( \log_2 M ) E_b / N_0} \right)$ & $\frac{M - 1}{2 \log_2 M} Q\left( (\log_2 M) \frac{E_b}{2 N_0} \right)$ \\
+        \hline
+        Noncoherent & $\frac{2 M R_b}{\log_2 M}$ & & & $0.5 e^{-(\log_2 M) E_b / 2 N_0}$ \\
+        \hline
+    \end{tabular}
+    \caption{Binary Bandpass Signaling and Their Characteristics}
+\end{table}
+\end{landscape}
 
 \end{document}
