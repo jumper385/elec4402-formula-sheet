@@ -297,7 +297,7 @@ The fourier transform of a periodid pulse train in the tiem domain leads to a se
     \item $f_0=1/T_0$: is the sampling frequency of the pulse train
 \end{itemize}
 
-\noindent $\therefore$ the Fourier Transform of a periodic pulse train results in a series of delta functions, representing the discrete frequency components present in the signal. The spectrm of $x(f)$ - the signal being sampled - is replicated around mulitples of $f_0$
+\noindent $\therefore$ the Fourier Transform of a periodic pulse train results in a series of delta functions, representing the discrete frequency components present in the signal. The spectrm of $x(f)$ - the signal being sampled - is replicated around mulitples of $f_0$.
 
 \subsection{Quantizer Step Size}
 \[
@@ -310,12 +310,50 @@ The fourier transform of a periodid pulse train in the tiem domain leads to a se
     \item $m$: Bit depth of quantization ($m=\log_2{N}$)
 \end{itemize}
 
-\section*{Entropy}
+\section{Pulse Amplitude Modulation (PAM)}
+
+\begin{itemize}
+    \item \( T \): Symbol period (duration of each symbol).
+    \item \( D = \frac{1}{T} \): Symbol rate or pulse rate.
+
+    \item Note: A single symbol can represent multiple bits, depending on the modulation scheme.
+\end{itemize}
+
+\section{PAM Signal Representation}
+The PAM signal for the \( m \)-th symbol, \( s_m(t) \), is given by:
+\[
+s_m(t) = A_m \cdot V(t)
+\]
+where:
+\begin{itemize}
+    \item \( A_m \): Amplitude corresponding to the \( m \)-th symbol.
+    \item \( V(t) \): Fixed pulse shape.
+    \item \( m = 1, 2, \dots, M \), where \( M \) is the number of symbols, typically based on the quantization levels.
+\end{itemize}
+
+\subsection{Bit Duration and Bit Rate}
+\begin{itemize}
+    \item \( T_b \): Bit duration, or time taken to transmit one bit.
+    \item \( R_b \): Bit rate, or number of bits transmitted per second $1/T_b$.
+\end{itemize}
+
+\subsection{Relationship between Bit Rate, Symbol Rate, and Bits per Symbol}
+The relationship between bit duration, bit rate, symbol rate, and the number of bits per symbol is given by:
+\[
+T_b = \frac{1}{R_b} = \frac{1}{kD} = \frac{T}{k} = \frac{T}{\log_2 M}
+\]
+where:
+\begin{itemize}
+    \item \( k \): Number of bits per symbol.
+    \item \( M \): Number of distinct symbols in the signal set, with \( M = 2^k \), so that each symbol represents \( k = \log_2 M \) bits.
+\end{itemize}
+
+\section{Entropy}
 \[
 	H(X) = - \sum p(x) \log_2 p(x)
 \]
 
-\section*{Joint Entropy}
+\section{Joint Entropy}
 \[
 	H(X,Y) = - \sum \sum p(x,y) \log_2 p(x,y)
 \]
