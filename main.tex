@@ -288,10 +288,13 @@ In this case, the upconverted PSD of the signals are also equal within the bandw
 
 \section{Sampling and Quantization}
 \subsection{Nyquist Rate}
-The Nyquist Rate determines the sample frequency the receiver must sample the basebaind signal $m(t)$ at. This value is twice the bandwidth: 
+The Nyquist Rate determines the minimum sampling rate required to accurately caputre the information fo a continuous-time signal without introducing aliasing.
 \[
-    R_{\text{sample}} = 2 \times \text{Signal Bandwidth}
+    f_s \ge 2_f_{sig}
 \]
+
+Additionally, for signals that do have higher frequency noise components, a lowpass filter is applied to the signal to band limit it --- preventing distortions to the sampled signal. The cutoff of the lowpass filter is the same as the signal's bandwidth $f_s$
+
 \subsection{Pulse Train Fourier Transform}
 The fourier transform of a periodid pulse train in the tiem domain leads to a series of impulses in the frequency domain:
 \[
