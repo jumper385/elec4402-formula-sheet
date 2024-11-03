@@ -1,8 +1,8 @@
-\documentclass[12pt]{article}
+\documentclass[10pt]{article}
 
 % Packages
 \usepackage{graphicx} % For including images
-\usepackage{amsmath}  % For math symbols and equations
+\usepackage{amsmath}  % For math stuff...
 \usepackage{amssymb}  % For additional math symbols
 \usepackage{hyperref} % For hyperlinks
 \usepackage{geometry} % For adjusting margins
@@ -234,7 +234,7 @@ Base-Band Frequency of a Signal:
 	f(t) = f_c + k_f m(t)
 \]
 
-\section*{Power Spectral Density (PSD)}
+\section{Power Spectral Density (PSD)}
 \[
 	G(f) = \lim_{T \to \infty} \frac{|X_T(f)|^2}{T}
 \]
@@ -287,6 +287,11 @@ In this case, the upconverted PSD of the signals are also equal within the bandw
 \]
 
 \section{Sampling and Quantization}
+\subsection{Nyquist Rate}
+The Nyquist Rate determines the sample frequency the receiver must sample the basebaind signal $m(t)$ at. This value is twice the bandwidth: 
+\[
+    R_{\text{sample}} = 2 \times \text{Signal Bandwidth}
+\]
 \subsection{Pulse Train Fourier Transform}
 The fourier transform of a periodid pulse train in the tiem domain leads to a series of impulses in the frequency domain:
 \[
