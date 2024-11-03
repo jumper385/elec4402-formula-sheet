@@ -503,7 +503,7 @@ The matched filter is optimal in Gaussian noise as it maximizes the SNR at the o
 \subsection{Calulating BER or Matched Filters}
 To calcualte the bit error rate of matched filters, you will need to derive $d^2$ from scratch. This is where the following comes into play:
 \[
-    d^2 = \int_{-\infty}^{\infty}\underbrace{\left|{s_1(t) - s_2(t)}_\right|^2}_{|\text{matched filter}|^2}\,dt
+    d^2 = \int_{-\infty}^{\infty} \underbrace{\left|s_1(t) - s_2(t)\right| ^2}_{|\text{matched filter}|^2}\,dt
 \]
 In this case, the piecewise function of the matched filter $h(t)$ can be substituted into the function. 
 
@@ -581,5 +581,71 @@ This means that 57\% of the transmitted bits are information, while the remainin
 \subsubsection{Trade-Off Between Rate and Reliability}
 
 The code rate \( R_c \) is chosen based on channel conditions. In noisy channels, a lower code rate (more redundancy) is preferred to enhance error resilience. In clear channels, a higher code rate is typically chosen to maximize data throughput.
+
+\section{Intersymbol Interference (ISI) Channels}
+Intersymbol Interference (ISI) occurs in communication channels when signal reflections, multipath propagation, or channel bandwidth limitations cause multiple instances of the same signal to arrive at different times. These delayed versions of the transmitted signal interfere with each other, causing distortion in the received signal. This interference results in a "smearing" or "smoothening" of the signal, where symbols are no longer distinguishable, leading to errors in symbol detection.
+
+\subsection{Causes and Effects of ISI}
+ISI can arise due to several physical and design-related factors, including:
+\begin{itemize}
+    \item \textbf{Multipath Propagation}: In wireless communication, signals may take multiple paths to reach the receiver due to reflections off buildings, the ground, or other obstacles. Each path has a different delay, causing overlapping symbols at the receiver.
+    \item \textbf{Limited Channel Bandwidth}: When the channel bandwidth is insufficient to pass the full frequency range of the transmitted signal, it leads to signal distortion. Sharp transitions in the signal are "rounded," resulting in spreading that overlaps with adjacent symbols.
+    \item \textbf{Reflection in Wired Media}: In wired channels, such as coaxial cables or twisted-pair lines, reflections can occur due to impedance mismatches at connectors, which send portions of the signal back along the path, causing interference with subsequent symbols.
+\end{itemize}
+
+To mitigate ISI, the transmitted signal must be shaped or designed such that it does not interfere with adjacent symbols at the sampling instants. This can be achieved by designing the system so that the received pulse shape \( p_r(t) \) has zero crossings at all sampling instants other than its own, i.e., \( p_r[n] = 0 \) for \( n \neq 0 \).
+
+\subsection{Nyquist Criterion for ISI-Free Channels}
+A channel is considered ISI-free if it satisfies the \textbf{Nyquist Criterion}. This criterion ensures that there is no interference between adjacent symbols at the sampling instants. Specifically, for a system with symbol period \( T \), the Nyquist criterion states that the pulse shape \( P(f) \) in the frequency domain must satisfy:
+\[
+    \sum_{n=-\infty}^{\infty} \underbrace{P_r\left(f + \frac{n}{T}\right)}_{\text{folded function}} = \text{constant}, \quad |f| \le \frac{1}{2T}
+\]
+where \( P_r(f) \) is the frequency response of the received pulse \( p_r(t) \).
+
+\subsubsection{Explanation of the Nyquist Criterion}
+The Nyquist criterion requires that the combined, ``folded'' frequency response of the channel and the pulse shape does not vary within the frequency band \( |f| \le \frac{1}{2T} \). This folding (summation over shifted frequency bands) is necessary because the bandwidth of a symbol is repeated periodically in the frequency domain due to sampling. By ensuring that this folded spectrum is constant, the Nyquist criterion guarantees that there is no ISI at the sampling instants.
+
+\subsubsection{Practical Interpretation}
+If the Nyquist criterion is satisfied, The symbols at the receiver will not interfere with each other, as each pulse \( p_r(t) \) has zero crossings at the sampling instants of other symbols.
+
+To achieve an ISI-free channel, practical pulse shapes, such as the \textbf{raised cosine pulse}, are often used because they satisfy the Nyquist criterion in practical systems.
+
+\subsection{Raised Cosine Filtering}
+One commonly used pulse that satisfies the Nyquist criterion is the \textbf{raised cosine pulse}. The raised cosine filter has a roll-off factor \( \alpha \) that controls the excess bandwidth, making it a flexible choice for designing ISI-free systems. The frequency response of the raised cosine filter is given by:
+\[
+P(f) =
+\begin{cases}
+T, & |f| \le \frac{1 - \alpha}{2T} \\
+\frac{T}{2} \left[ 1 + \cos\left( \frac{\pi T}{\alpha} \left( |f| - \frac{1 - \alpha}{2T} \right) \right) \right], & \frac{1 - \alpha}{2T} < |f| \le \frac{1 + \alpha}{2T} \\
+0, & \text{otherwise}
+\end{cases}
+\]
+where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When \( \alpha = 0 \), the raised cosine filter becomes a sinc pulse, which perfectly satisfies the Nyquist criterion. As \( \alpha \) increases, the filter allows more excess bandwidth, making it more robust to timing errors and practical imperfections.
+
+\subsection{Calculating Symbol Rates}
+\[
+    D \le \frac{2W}{1 + \alpha}
+\]
+
+\noindent Where:
+\begin{itemize}
+    \item $D$: Symbol Rate
+    \item $W$: Channel Bandwidth
+    \item $\alpha$: RC Rolloff
+\end{itemize}
+
+\subsection{Calculating Bit Rate}
+\begin{align*}
+    R_b &= \log_2{M} \cdot D \\ 
+        &= k \cdot D
+\end{align*}
+
+\noindent Where:
+\begin{itemize}
+    \item $R_b$: Bit rate
+    \item $D$: Symbol Rate
+    \item $M$: Number of Unique Symbols
+    \item $k$: Number of Bits in a Symbol
+\end{itemize}
 
 \end{document}
