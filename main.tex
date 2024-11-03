@@ -9,6 +9,7 @@
 \usepackage{fancyhdr} % For header and footer customization
 \usepackage{lastpage} % For referencing the last page number
 \usepackage{titlesec} % For access to section titles in the header
+\usepackage{pdflscape}
 \geometry{margin=1in} % Set margin size
 
 % Title
@@ -664,7 +665,7 @@ where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When
 \begin{table}[h!]
     \centering
     \renewcommand{\arraystretch}{1.5}
-    \begin{tabular}{c c}
+    \begin{tabular}{c|c}
         \hline
         \textbf{Time Function \( x(t) \)} & \textbf{Fourier Transform \( X(f) \)} \\
         \hline
@@ -704,7 +705,43 @@ where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When
     \caption{Basic Fourier Transform Pairs}
 \end{table}
 
+%TODO: check correctness
+\begin{landscape}
 \section{Carrier Modulation Schemes Comparisons}
-
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|c|c|c|c}
+        \hline
+        \textbf{Signalling} & \textbf{Null BW (Hz)} & \textbf{Abs BW (Hz)} & \textbf{BER Coherent Detection} & \textbf{BER with Envelope} \\
+        \hline
+        ASK & $2R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{E_b}{N_0}} \right)$ & $0.5 e^{-E_b / 2 N_0}$ \\
+        \hline
+        BPSK & $2R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{2 E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        Sunde's FSK & $3R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{E_b}{N_0}} \right)$ & $0.5 e^{-E_b / 2 N_0}$ \\
+        \hline
+        DBPSK & $2R_b$ & $R_b (1 + \alpha)$ & $Q\left( \sqrt{\frac{E_b}{N_0}} \right)$ & $0.5 e^{-E_b / N_0}$ \\
+        \hline
+        \textit{M-ary Bandpass Signaling} & & & & \\
+        \hline
+        QPSK/OQPSK & $R_b$ & $\frac{R_b (1 + \alpha)}{2}$ & $Q\left( \sqrt{\frac{2 E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        MSK & $1.5 R_b$ & $\frac{3 R_b (1 + \alpha)}{4}$ & $Q\left( \sqrt{\frac{2 E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-PSK ($M > 4$) & $\frac{2 R_b}{\log_2 M}$ & $\frac{R_b (1 + \alpha)}{\log_2 M}$ & $\frac{2}{\log_2 M} Q\left( \sqrt{2 \log_2 M \sin^2 \left( \frac{\pi}{M} \right) \frac{E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-DPSK ($M > 4$) & $\frac{2 R_b}{\log_2 M}$ & $\frac{R_b (1 + \alpha)}{2 \log_2 M}$ & $\frac{2}{\log_2 M} Q\left( \sqrt{4 \log_2 M \sin^2 \left( \frac{\pi}{2M} \right) \frac{E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-QAM (Square constellation) & $\frac{2 R_b}{\log_2 M}$ & $\frac{R_b (1 + \alpha)}{\log_2 M}$ & $\frac{4}{\log_2 M} \left(1 - \frac{1}{\sqrt{M}}\right) Q\left( \sqrt{\frac{3 \log_2 M}{M - 1} \frac{E_b}{N_0}} \right)$ & req. coherent \\
+        \hline
+        M-FSK Coherent & $\frac{(M + 3) R_b}{2 \log_2 M}$ & & $Q\left( \sqrt{( \log_2 M ) E_b / N_0} \right)$ & $\frac{M - 1}{2 \log_2 M} Q\left( (\log_2 M) \frac{E_b}{2 N_0} \right)$ \\
+        \hline
+        Noncoherent & $\frac{2 M R_b}{\log_2 M}$ & & & $0.5 e^{-(\log_2 M) E_b / 2 N_0}$ \\
+        \hline
+    \end{tabular}
+    \caption{Binary Bandpass Signaling and Their Characteristics}
+\end{table}
+\end{landscape}
 
 \end{document}
