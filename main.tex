@@ -290,7 +290,7 @@ In this case, the upconverted PSD of the signals are also equal within the bandw
 \subsection{Nyquist Rate}
 The Nyquist Rate determines the minimum sampling rate required to accurately caputre the information fo a continuous-time signal without introducing aliasing.
 \[
-    f_s \ge 2_f_{sig}
+    f_s \ge 2 \times f_{sig}
 \]
 
 Additionally, for signals that do have higher frequency noise components, a lowpass filter is applied to the signal to band limit it --- preventing distortions to the sampled signal. The cutoff of the lowpass filter is the same as the signal's bandwidth $f_s$
@@ -467,7 +467,7 @@ The differential matched filter is derived based on the following principles:
     \]
 \end{enumerate}
 
-\section{Matched Filter for Multiple Symbols (M-ary Detection)}
+\subsection{Matched Filter for Multiple Symbols (M-ary Detection)}
 For M-ary detection (where \( M > 2 \)), the differential matched filter approach does not generalize effectively. Instead, a separate matched filter is constructed for each symbol \( s_k(t) \) as follows:
 \[
 h_k(t) = s_k(T - t)
@@ -480,6 +480,7 @@ To detect which symbol was transmitted:
     \hat{k} = \arg \max_{k} y_k(T)
     \]
 \end{enumerate}
+
 
 \subsubsection{Why Differential Matched Filters Do Not Generalize for \( M > 2 \)}
 For binary detection (\( M = 2 \)), a differential matched filter \( h(t) = s_1(T - t) - s_2(T - t) \) works well because there are only two hypotheses, and the output sign can be used to distinguish between the two symbols. However, this approach does not generalize for \( M > 2 \) because:
