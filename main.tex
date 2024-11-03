@@ -348,6 +348,57 @@ where:
     \item \( M \): Number of distinct symbols in the signal set, with \( M = 2^k \), so that each symbol represents \( k = \log_2 M \) bits.
 \end{itemize}
 
+\section{Spectra of Linearly Modulated Digital Signals}
+
+\subsection{Signal Model}
+The signal \( s(t) \) for a linearly modulated digital signal is given by:
+\[
+s(t) = \sum_{n=-\infty}^{\infty} A_n V(t + \Delta - nT)
+\]
+where:
+\begin{itemize}
+    \item \( A_n \): Sequence of scalar symbols (data).
+    \item \( V(t) \): Pulse shape (basis function).
+    \item \( T \): Symbol period.
+    \item \( \Delta \): Random channel delay, uniformly distributed over \( [0, T] \).
+\end{itemize}
+
+\subsection{Power Spectral Density (PSD)}
+The Power Spectral Density \( G(f) \) of \( s(t) \) is:
+\[
+G(f) = \frac{|V(f)|^2}{T} \sum_{\ell=-\infty}^{\infty} R(\ell) e^{-j 2 \pi f T \ell}
+\]
+where:
+\begin{itemize}
+    \item \( |V(f)|^2 \): Magnitude squared of the Fourier Transform of \( V(t) \).
+    \item \( R(\ell) \): Autocorrelation function of the sequence \( \{A_n\} \) at lag \( \ell \).
+    \item \( e^{-j 2 \pi f T \ell} \): Frequency shift term.
+\end{itemize}
+
+\subsection{Frequency Domain Summation of Delta Functions}
+The periodic nature of the spectrum due to sampling can be represented as:
+\[
+\sum_{\ell=-\infty}^{\infty} e^{-j 2 \pi f T \ell} = \frac{1}{T} \sum_{k=-\infty}^{\infty} \delta \left(f - \frac{k}{T}\right)
+\]
+where:
+\begin{itemize}
+    \item Each delta function at \( f = \frac{k}{T} \) represents an impulse in the spectrum, showing periodic repetition at multiples of the symbol rate \( \frac{1}{T} \).
+\end{itemize}
+
+\section{Bit Error Rate}
+\[
+    \text{BER} = Q\left(\sqrt{\frac{d^2}{2N_o}}\right)
+\]
+\begin{itemize}
+    \item $d$: The average distance between symbols. 
+    \item $N_o$: Noise Figure
+\end{itemize}
+\subsection{Calulating BER or Matched Filters}
+To calcualte the bit error rate of matched filters, you will need to derive $d^2$ from scratch. This is where the following comes into play:
+\[
+    d^2 = \int_{-\infty}^{\infty}\left|s_1(t) - s_2(t)\right|^2\,dt
+\]
+
 \section{Entropy}
 \[
 	H(X) = - \sum p(x) \log_2 p(x)
