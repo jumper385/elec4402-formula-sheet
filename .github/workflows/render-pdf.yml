@@ -32,15 +32,12 @@ jobs:
 
     - name: Add timestamp to PDF
       run: |
-        TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-        mv main.pdf "main_$TIMESTAMP.pdf"
+        TIMESTAMP=$(date +"%Y_%m_%d-%H:%M:%S")
+        mv main.pdf "elec4402-formula-sheet_$TIMESTAMP.pdf"
 
     - name: Upload PDF artifact
       uses: actions/upload-artifact@v3
       with:
-        name: main_$TIMESTAMP.pdf
-        path: main_$TIMESTAMP.pdf
+        name: elec4402-formula-sheet_$TIMESTAMP.pdf
+        path: elec4402-formula-sheet_$TIMESTAMP.pdf
         if-no-files-found: error
-        archive: false  # Avoids zipping the artifact
-        retention-days: 5
-
