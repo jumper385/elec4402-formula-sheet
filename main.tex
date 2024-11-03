@@ -1,0 +1,324 @@
+\documentclass[12pt]{article}
+
+% Packages
+\usepackage{graphicx} % For including images
+\usepackage{amsmath}  % For math symbols and equations
+\usepackage{amssymb}  % For additional math symbols
+\usepackage{hyperref} % For hyperlinks
+\usepackage{geometry} % For adjusting margins
+\usepackage{fancyhdr} % For header and footer customization
+\usepackage{lastpage} % For referencing the last page number
+\usepackage{titlesec} % For access to section titles in the header
+\geometry{margin=1in} % Set margin size
+
+% Title
+\title{ELEC4402 Formula Sheet}
+\author{Henry Chen}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}                % Clear all header and footer fields
+
+% Configure the header to display the section name on the left and title on the right
+\fancyhead[L]{\leftmark}        % Left header: current section name
+\fancyhead[R]{\thetitle}        % Right header: document title
+
+% Configure the footer to display page number out of max page number
+\fancyfoot[C]{Page \thepage\ of \pageref{LastPage}}
+
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+
+\begin{document}
+
+% Title Page
+\maketitle
+
+% Abstract
+\begin{abstract}
+    Key formulae and helpers for ELEC4402 - Communication Systems. Hopefully this helps to carry!!!
+\end{abstract}
+
+% Table of Contents
+\tableofcontents
+\newpage
+
+\section{Handy Formulae}
+\subsection{Rectangle Functions}
+\[
+	\text{rect}(t) \rightarrow
+	\begin{cases}
+		1, & -\frac{1}{2} \leq t \leq \frac{1}{2} \\
+		0, & \text{otherwise}
+	\end{cases}
+\]
+
+\[
+	\text{rect}\left(\frac{t}{T}\right) \rightarrow
+	\begin{cases}
+		1, & -\frac{T}{2} \leq t \leq \frac{T}{2} \\
+		0, & \text{otherwise}
+	\end{cases}
+\]
+
+\[
+	\text{rect}\left(\frac{t - T}{T}\right) \rightarrow
+	\begin{cases}
+		1, & T - \frac{T}{2} \leq t \leq T + \frac{T}{2} \\
+		0, & \text{otherwise}
+	\end{cases}
+\]
+
+\subsection{Sinusoid Integration}
+\[
+	\int \sin(at) \, dt = -\frac{\cos(at)}{a} + C
+\]
+\[
+	\int \cos(at) \, dt = \frac{\sin(at)}{a} + C
+\]
+\[
+	\int e^{at} \, dt = \frac{e^{at}}{a} + C
+\]
+
+\section{Signal Characteristics}
+\subsection{(Average) Power of a Signal}
+$$
+	P_x = \frac{1}{T} \int_{-\frac{T}{2}}^{\frac{T}{2}} x^2(t) \, dt
+$$
+
+For sinusoidal signals, the power can be simplified to:
+$$
+	P_x = \frac{A_c^2}{2}
+$$
+
+\subsection{Energy of a Signal}
+$$
+	E = \int_{-\infty}^{\infty} x^2(t) \, dt
+$$
+
+\subsection{Representation of Narrowband (NB) Signals}
+$$
+	g(t) = a(t) \cos(\underbrace{2 \pi f_c t}_{\text{A}} + \underbrace{\phi(t)}_{\text{B}})
+$$
+Using the identity $\cos(A+B) = \cos(A)\cos(B) - \sin(A)\sin(B)$
+\begin{align*}
+	\tilde{g}(t) & = \underbrace{a(t) \cos(\phi(t))}_{\text{in-phase}} - \underbrace{a(t) \sin(\phi(t))}_{\text{quadrature}} \\
+	g_i(t)       & = a(t) \cos(\omega_c t + \phi(t))                                                                         \\
+	g_q(t)       & = a(t) \sin(\omega_c t + \phi(t))
+\end{align*}
+
+\subsection{Complex Envelope}
+Given $g_i(t)$ and $g_q(t)$ and $a(t)$
+\begin{align*}
+	g(t) & = g(t) + j \cdot g(t) \\
+	a(t) & = e^{j\phi(t)}
+\end{align*}
+
+\section{Amplitude Modulation (AM) Formulae}
+\subsection{Conventional AM Signal}
+\[
+	s(t) = A_c\left[1 + \mu\cos(2 \pi f_m t)\right]\cos(2 \pi f_c t)
+\]
+
+\subsection{AM Modulation Index}
+
+$$
+	\mu = k_a \cdot A_m
+$$
+
+\noindent Where:
+\begin{itemize}
+	\item $0 \leq \mu \leq 1$
+	\item $\mu = 1 \Rightarrow \text{overmodulated}$
+\end{itemize}
+
+\subsection{AM Power Efficiency}
+\[
+	\eta = \frac{\text{Baseband Power}}{\text{Total Power}} = \frac{\mu^2}{2 + \mu^2}
+\]
+
+\subsection{AM Signal Modulation Index}
+\[
+	\mu = \frac{A_{\text{max}} - A_{\text{min}}}{A_{\text{max}} + A_{\text{min}}}
+\]
+\noindent Where:
+\begin{itemize}
+	\item Maximum Amplitude: $A_{\text{max}} = A_c(1+\mu)$
+	\item Minimum Amplitude: $A_{\text{max}} = A_c(1-\mu)$
+\end{itemize}
+
+\section{Frequency Modulation (FM) Formulae}
+
+\subsection{FM Modulation Index}
+\[
+	\beta = \frac{\Delta f}{f_m} = \frac{k_f A_m}{f_m}
+\]
+
+\noindent Where:
+\begin{itemize}
+	\item Narrowband: \( \beta < 1 \)
+	\item Wideband: \( \beta > 1 \)
+\end{itemize}
+
+\subsection{Maximum Frequency Deviation}
+\begin{align*}
+	\Delta f & = k_f \cdot A_m   \\
+	         & = \beta \cdot f_m
+\end{align*}
+
+\noindent Where:
+\begin{itemize}
+	\item $k_f$: Frequency Sensitivity; typically the VCO Specification
+	\item $A_m$: Message Amplitude; the message signal is usually injected into the VCO to drive the signal
+	\item $\beta$: The FM Modulation Index
+\end{itemize}
+
+%TODO: Check this is correct...
+\subsection{FM Complex Envelope}
+\begin{align*}
+	s(t) & = A_c \cos(2\pi f_c t + \beta \sin(2 \pi f_m t))                                 \\
+	     & = Re\left[A_c \cdot e^{2\pi f_c tj + j\beta\sin(2\pi f_m t)}\right]              \\
+	     & = Re\left[A_c \cdot e^{2\pi f_c tj} \cdot e^{j\beta\cdot\sin(2\pi f_m t)}\right] \\
+	     & = Re\left[\tilde{s}(t)\cdot e^{j\beta\cdot\sin(2\pi f_c t)}\right]               \\
+\end{align*}
+
+\noindent Where:
+\begin{itemize}
+	\item $\tilde{s}(t) = A_c \cdot e^{j \beta\cdot\sin(2\pi f_m t))}$: The complex envelope of the FM signal
+\end{itemize}
+
+\subsection{Single Tone FM Signal}
+\subsubsection{Time Domain Representation}
+\begin{align*}
+	s(t)         & = A_c \sum_{n=-\infty}^{\infty}  J_n(\beta)\cos\left[2 \pi (f_c + n f_m) t\right] \\
+	\tilde{s}(t) & = A_c \sum_{n=-\infty}^{\infty} J_n(\beta) e^{2 \pi \cdot n f_m t \cdot j}        \\
+\end{align*}
+\subsubsection{Frequency Domain Representation}
+\[
+	s(f) = \frac{A_c}{2} \sum_{n=-\infty}^{\infty} \underbrace{J_n(\beta)\left[\delta(f-f_c-n f_m) + \delta(f+f_c+n f_m)\right]}_{\text{Bessel Function of Delta Functions}}
+\]
+
+\subsection{Carson's Rule}
+\subsubsection{Narrow Band Signals ($\beta < 1$)}
+\[
+	B = 2 f_m
+\]
+
+\subsubsection{Wideband Signals ($\beta > 1$)}
+\[
+	B = 2 \Delta f + 2 f_m
+\]
+\subsubsection{For Arbitrary Signals}
+\begin{align*}
+	W & = 2 D W + 2 W                                                                            \\
+	W & = 2DW(1 + \frac{1}{D})                                                                   \\
+	  & = 2 \cdot \underbrace{\max_{t}\left|k_f m(t)\right|}_{\text{$k_f$ x message bw}} + 2 f_m
+\end{align*}
+
+\noindent Where:
+\begin{itemize}
+	\item $D = \frac{\Delta f}{W} $: Frequency Deviation of the arbitrary signal
+\end{itemize}
+
+\subsection{Arbitrary Signal Helpers for FM}
+\[
+	f(t) = \frac{1}{2\pi} \cdot \frac{d\theta(t)}{d(t)} = f_c + k_f m(t)
+\]
+
+Generic form of $s(t)$:
+\[
+	s(t) = A_c\cos(\underbrace{2 \pi f_c t}_{\text{carrier}} + \underbrace{\beta m(t)}_{\text{baseband}})
+\]
+
+Base-Band Frequency of a Signal:
+\[
+	f(t) = f_c + k_f m(t)
+\]
+
+\section*{Power Spectral Density (PSD)}
+\[
+	G(f) = \lim_{T \to \infty} \frac{|X_T(f)|^2}{T}
+\]
+
+\subsection{PSD through an LTI System}
+\[
+    G_y(f) = \left|H(f)\right|^2 \cdot G_x(f)
+\]
+
+\noindent Where:
+\begin{itemize}
+    \item $H(f)$: Fourier Transform of the LTI System's Transfer. By squaring it, you then get the Power Spectral Density
+\end{itemize}
+
+\subsection{PSD of a Random Process}
+\[
+G_X(f) = \lim_{T \to \infty} \frac{\mathbb{E} \left\{ |X_T(f, \varepsilon_i)|^2 \right\}}{T}
+\]
+
+\noindent\textbf{NOTE:} very similar for deterministic signals PSD
+
+\noindent\textbf{NOTE:} The PSD is an ensemble average of the powers of the of captured samples
+
+\subsection{Power of a PSD}
+\[
+    P = \int_{-\infty}^{\infty} G_X(f) \, d\!f 
+\]
+
+\subsection{PSD Of Narrowband Random Processes}
+The PSD of random processes (noise) are the same in both, the in-phase and quadrature components (i.e. $G_{x_s} == G_{x_c}$).
+
+\[
+    x(t) = x_c \cos(2\pi f_c t) - x_s \sin(2 \pi f_c t)
+\]
+
+\noindent Where:
+\begin{itemize}
+    \item $x(t)$: Is a random process
+    \item $x_c\cos(2\pi f_c t)$: In-Phase component of $x(t)$.
+    \item $x_s\sin(2\pi f_c t)$: Quadratur component of $x(t)$.
+\end{itemize}
+
+In this case, the upconverted PSD of the signals are also equal within the bandwidth of the upconverted channel.
+\[
+    G_{x_s} = G_{x_c} =
+    \begin{cases}
+      G_x(f + f_c) + G_x(f - f_c) & \text{if } |f| < B\\
+      0 & \text{otherwise}
+   \end{cases}
+\]
+
+\section{Sampling and Quantization}
+\subsection{Pulse Train Fourier Transform}
+The fourier transform of a periodid pulse train in the tiem domain leads to a series of impulses in the frequency domain:
+\[
+    \sum_{m=-\infty}^{\infty} \delta(t - m T_0) \xrightarrow{\mathcal{F}T} \sum_{n=-\infty}^{\infty} \delta(f - n f_0)
+\]
+\noindent Where:
+\begin{itemize}
+    \item $f_0=1/T_0$: is the sampling frequency of the pulse train
+\end{itemize}
+
+\noindent $\therefore$ the Fourier Transform of a periodic pulse train results in a series of delta functions, representing the discrete frequency components present in the signal. The spectrm of $x(f)$ - the signal being sampled - is replicated around mulitples of $f_0$
+
+\subsection{Quantizer Step Size}
+\[
+    \Delta = \frac{2V}{N} = \frac{2V}{2^m}
+\]
+\noindent Where:
+\begin{itemize}
+    \item $V$: The amplitude of the signal
+    \item $N$: Number of Quantization Steps
+    \item $m$: Bit depth of quantization ($m=\log_2{N}$)
+\end{itemize}
+
+\section*{Entropy}
+\[
+	H(X) = - \sum p(x) \log_2 p(x)
+\]
+
+\section*{Joint Entropy}
+\[
+	H(X,Y) = - \sum \sum p(x,y) \log_2 p(x,y)
+\]
+
+
+\end{document}
