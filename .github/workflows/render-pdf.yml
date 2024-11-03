@@ -21,11 +21,9 @@ jobs:
 
     - name: Compile LaTeX with latexmk
       run: latexmk -pdf -quiet -interaction=nonstopmode main.tex
-      # Replace 'main.tex' with the name of your LaTeX file
 
     - name: Upload PDF artifact
       uses: actions/upload-artifact@v3
       with:
         name: compiled-pdf
-        path: elec4402-formula-sheet.pdf
-        # Replace 'main.pdf' with the name of the output PDF file
+        path: main.pdf
