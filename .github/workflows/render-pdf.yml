@@ -28,10 +28,6 @@ jobs:
           texlive-latex-base \
           latexmk
 
-    - name: make fake file
-      run: |
-        echo "HELLO" > main.pdf
-
     - name: Add timestamp to PDF
       run: |
         TIMESTAMP=$(date +"%Y_%m_%d-%H%M%S")
