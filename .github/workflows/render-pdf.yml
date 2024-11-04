@@ -27,6 +27,27 @@ jobs:
 #        latexmk -pdf -output-directory=output main.tex
 #        mv output/main.pdf main.pdf
 
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          texlive-latex-base \
+          latexmk
+        pip install commitizen
+
+    - name: Bump version
+      id: bump_version
+      run: |
+        cz bump --yes
+        git push --follow-tags
+
+    - name: Get new version
+      id: get_version
+      run: |
+        VERSION=$(cz version | grep -oP 'Current version: \K.*')
+        echo "VERSION=$VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
     - name: make fake pdf
       run: |
         echo "HELLO" > main.pdf
@@ -40,8 +61,8 @@ jobs:
     - name: Upload PDF artifact
       uses: actions/upload-artifact@v3
       with:
-        name: elec4402-formula-sheet_${{ env.TIMESTAMP }}.pdf
-        path: elec4402-formula-sheet_${{ env.TIMESTAMP }}.pdf
+        name: elec4402-formula-sheet_${{ env.VERSION }}.pdf
+        path: elec4402-formula-sheet_${{ env.VERSION }}.pdf
         if-no-files-found: error
 
     - name: Create GitHub Release
@@ -61,6 +82,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: elec4402-formula-sheet_${{ env.TIMESTAMP }}.pdf
-        asset_name: elec4402-formula-sheet_${{ env.TIMESTAMP }}.pdf
+        asset_path: elec4402-formula-sheet_${{ env.VERSION }}.pdf
+        asset_name: elec4402-formula-sheet_${{ env.VERSION }}.pdf
         asset_content_type: application/pdf
