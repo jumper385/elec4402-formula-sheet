@@ -19,20 +19,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install TeX Live Full
-      run: sudo apt-get update && sudo apt-get install -y texlive-full
-
-#    - name: Install TeX Live Essentials
+#    - name: Install TeX Live Full
+#      run: sudo apt-get update && sudo apt-get install -y texlive-full
+#
+#    - name: Build PDF with LaTeX
 #      run: |
-#        sudo apt-get update
-#        sudo apt-get install -y \
-#          texlive-latex-base \
-#          latexmk
+#        latexmk -pdf -output-directory=output main.tex
+#        mv output/main.pdf main.pdf
 
-    - name: Build PDF with LaTeX
+    - name: make fake pdf
       run: |
-        latexmk -pdf -output-directory=output main.tex
-        mv output/main.pdf main.pdf
+        echo "HELLO" > main.pdf
 
     - name: Add timestamp to PDF
       run: |
