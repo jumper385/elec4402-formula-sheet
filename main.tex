@@ -149,6 +149,30 @@ $$
 
 \section{Frequency Modulation (FM) Formulae}
 
+\subsection{FM Modulation Representation}
+\[
+    s(t) = A_c \cdot cos(2 \pi f_c t + \beta cos(2 \pi f_m t))
+\]
+\noindent Where:
+\begin{itemize}
+	\item $A_c$: Carrier Amplitude
+	\item $f_c$: Carrier Frequency
+	\item $f_m$: Modulation Frequency
+	\item $\beta$: Modulation Index
+\end{itemize}
+
+\subsection{Arbitrary Representation of FM Signals}
+\[
+    s(t) = A_c \cdot cos\left[2 \pi f_c t + 2\pi k_f \int_{0}^{t} m(\tau) \, dt\right]
+\]
+\noindent Where:
+\begin{itemize}
+	\item $A_c$: Carrier Amplitude
+	\item $f_c$: Carrier Frequency
+    \item $m(\tau)$: The baseband message signal
+	\item $k_a$: The frequency sensitivity of the signal
+\end{itemize}
+
 \subsection{FM Modulation Index}
 \[
 	\beta = \frac{\Delta f}{f_m} = \frac{k_f A_m}{f_m}
@@ -338,7 +362,7 @@ Additionally, for signals that do have higher frequency noise components, a lowp
     \item Note: A single symbol can represent multiple bits, depending on the modulation scheme.
 \end{itemize}
 
-\section{PAM Signal Representation}
+\subsection{PAM Signal Representation}
 The PAM signal for the \( m \)-th symbol, \( s_m(t) \), is given by:
 \[
 s_m(t) = A_m \cdot V(t)
@@ -659,6 +683,131 @@ where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When
     \item $k$: Number of Bits in a Symbol
 \end{itemize}
 
+\section{Channel Codes}
+
+\subsection{Definitions}
+\begin{itemize}
+    \item \textbf{Hamming Weight} ($w_H(x)$): The number of '1's in codeword $x$.
+    \item \textbf{Hamming Distance} ($d_H(x_1, x_2) = w_H(x_1 \oplus x_2)$): The number of differing bits between codewords $x_1$ and $x_2$, calculated as the Hamming weight of the XOR of the two codes.
+    \item \textbf{Minimum Distance} ($d_{\text{min}}$): For non-zero $x$, excludes the weight of the all-zero codeword. In a linear block code, $d_{\text{min}} = w_{\text{min}}$.
+\end{itemize}
+
+\subsection{Linear Block Code}
+A linear block code is represented by parameters $(n, k)$, where:
+\begin{itemize}
+    \item $n$ is the width of a codeword.
+    \item $2^k$ codewords are generated.
+\end{itemize}
+
+A linear block code must be a subspace and satisfy:
+\begin{enumerate}
+    \item The zero vector must be present at least once.
+    \item The XOR of any codeword pair in the code must result in a codeword that is already present in the code table.
+    \item $d_{\text{min}} = w_{\text{min}}$ (Implied by the previous conditions).
+\end{enumerate}
+
+\subsection{Code Generation}
+Each generator vector is a binary string of size $n$. There are $k$ generator vectors in $\mathbf{G}$.
+
+\[
+\mathbf{G} = \begin{bmatrix} g_0 \\ g_1 \\ \vdots \\ g_{k-1} \end{bmatrix} = \begin{bmatrix} g_{0,0} & \dots & g_{0,n-2} & g_{0,n-1} \\ g_{1,0} & \dots & g_{1,n-2} & g_{1,n-1} \\ \vdots & \ddots & \vdots & \vdots \\ g_{k-1,0} & \dots & g_{k-1,n-2} & g_{k-1,n-1} \end{bmatrix}
+\]
+
+A message block $\mathbf{m}$ is encoded as $\mathbf{x}$ using the generation codewords in $\mathbf{G}$:
+\[
+\mathbf{x} = \mathbf{m} \mathbf{G} = m_0 g_0 + m_1 g_1 + \dots + m_{k-1} g_{k-1}
+\]
+
+\subsection{Systematic Linear Block Code}
+A systematic linear block code contains $k$ message bits (copied as-is) and $(n - k)$ parity bits placed after the message bits.
+
+\[
+\mathbf{G} = \begin{bmatrix} \mathbf{I}_k & \mathbf{P} \end{bmatrix} = \begin{bmatrix} 1 & 0 & \dots & 0 & p_{0,0} & \dots & p_{0,n-2} & p_{0,n-1} \\ 0 & 1 & \dots & 0 & p_{1,0} & \dots & p_{1,n-2} & p_{1,n-1} \\ \vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots & \vdots \\ 0 & 0 & \dots & 1 & p_{k-1,0} & \dots & p_{k-1,n-2} & p_{k-1,n-1} \end{bmatrix}
+\]
+
+\[
+\mathbf{x} = \mathbf{m} \mathbf{G} = \mathbf{m} \begin{bmatrix} \mathbf{I}_k & \mathbf{P} \end{bmatrix} = [\mathbf{m} | \mathbf{b}]
+\]
+
+where $\mathbf{b} = \mathbf{m} \mathbf{P}$ represents the parity bits of $\mathbf{x}$.
+
+\subsection{Parity Check Matrix}
+To check for valid codewords, we construct the parity check matrix $\mathbf{H}$ by transposing $\mathbf{P}$:
+
+\[
+\mathbf{H} = \begin{bmatrix} \mathbf{P}^T | \mathbf{I}_{n-k} \end{bmatrix}
+\]
+
+\[
+\mathbf{x} \mathbf{H}^T = 0 \Rightarrow \text{Codeword is valid}
+\]
+
+\subsection{Procedure to Find Parity Check Matrix from Codewords}
+\begin{enumerate}
+    \item Calculate $k = \log_2(N)$, where $N$ is the number of codewords.
+    \item Partition codewords into $k$ information bits and $(n - k)$ parity bits.
+    \item Express parity bits as a linear combination of information bits.
+    \item Use these coefficients to construct the $\mathbf{P}$ matrix and find $\mathbf{H}$.
+\end{enumerate}
+
+\subsection{Error Detection and Correction}
+\begin{itemize}
+    \item \textbf{Detection of $s$ errors}: $d_{\text{min}} \geq s + 1$
+    \item \textbf{Correction of $u$ errors}: $d_{\text{min}} \geq 2u + 1$
+\end{itemize}
+
+\subsection{Example: Finding the Parity Check Matrix from Codewords}
+
+Consider the following set of codewords (as represented in the row):
+
+\[
+\begin{array}{c|ccccc}
+& x_1 & x_2 & x_3 & x_4 & x_5 \\
+\hline
+s_1 & 1 & 0 & 1 & 1 & 0 \\
+s_2 & 0 & 1 & 1 & 1 & 1 \\
+s_3 & 0 & 0 & 0 & 0 & 0 \\
+s_4 & 1 & 1 & 0 & 0 & 1 \\
+\end{array}
+\]
+
+\paragraph{Step 1: Determine \( k \)}
+The number of codewords, \( N_s \), is 4. Calculate \( k = \log_2(N_s) = \log_2(4) = 2 \). This means we have \( k = 2 \) information bits and \( n - k = 3 \) parity bits.
+
+\paragraph{Step 2: Partition Codewords into Information and Parity Bits}
+Let \( x_1 \) and \( x_2 \) represent the information bits, and \( x_3 \), \( x_4 \), and \( x_5 \) represent the parity bits.
+
+\paragraph{Step 3: Express Parity Bits in Terms of Information Bits}
+Write each parity bit as a linear combination (XOR) of the information bits.
+
+\begin{align*}
+    x_3 &= x_1 \oplus x_2 \\
+    x_4 &= x_1 \oplus x_2 \\
+    x_5 &= x_2
+\end{align*}
+
+\paragraph{Step 4: Construct the \( \mathbf{P} \) Matrix and Find \( \mathbf{H} \)}
+Using the relationships we derived, we can build the \( \mathbf{P} \) matrix by expressing the parity bits as combinations of the information bits \( x_1 \) and \( x_2 \):
+
+\[
+\mathbf{P} = \begin{bmatrix} 1 & 1 \\ 1 & 1 \\ 0 & 1 \end{bmatrix}
+\]
+
+Now, form the parity check matrix \( \mathbf{H} \) by combining \( \mathbf{P}^T \) and \( \mathbf{I}_{n-k} \):
+
+\[
+\mathbf{H} = \begin{bmatrix} 1 & 1 & 1 & 0 & 0 \\ 1 & 1 & 0 & 1 & 0 \\ 0 & 1 & 0 & 0 & 1 \end{bmatrix}
+\]
+
+\paragraph{Verification}
+To confirm that \( \mathbf{H} \) correctly checks for valid codewords, we can test it with a codeword, say \( \mathbf{x} = [1, 0, 1, 1, 0] \):
+
+\[
+\mathbf{x} \mathbf{H}^T = [1, 0, 1, 1, 0] \begin{bmatrix} 1 & 1 & 1 & 0 & 0 \\ 1 & 1 & 0 & 1 & 0 \\ 0 & 1 & 0 & 0 & 1 \end{bmatrix}^T = 0
+\]
+
+Since the result is zero, \( \mathbf{x} \) is a valid codeword.
+
 \newpage
 \appendix
 \section{Basic Fourier Transform Pairs}
@@ -700,6 +849,8 @@ where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When
         \( \frac{1}{\pi t} \) & \( -j\cdot\text{sgn}(f) \) \\
         \hline
         \( \delta'(t) \) & \( j2\pi f \) \\
+        \hline
+        Generic Time Shift $f(x-t_0)$ & $F(x)\cdot e^{-j 2 \pi f t_0}$ \\ 
         \hline
     \end{tabular}
     \caption{Basic Fourier Transform Pairs}
