@@ -16,56 +16,56 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-#    - name: Install TeX Live Full
-#      run: sudo apt-get update && sudo apt-get install -y texlive-full
-#
-#    - name: Build PDF with LaTeX
-#      run: |
-#        latexmk -pdf -output-directory=output main.tex
-#        mv output/main.pdf main.pdf
+        #    - name: Install TeX Live Full
+        #      run: sudo apt-get update && sudo apt-get install -y texlive-full
+        #
+        #    - name: Build PDF with LaTeX
+        #      run: |
+        #        latexmk -pdf -output-directory=output main.tex
+        #        mv output/main.pdf main.pdf
 
-	- name: Create bump and changelog
-	  uses: commitizen-tools/commitizen-action@master
-	  with:
-		github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: make fake pdf
-      run: |
-        echo "HELLO" > main.pdf
+      - name: make fake pdf
+        run: |
+          echo "HELLO" > main.pdf
 
-    - name: Add timestamp to PDF
-      run: |
-        TIMESTAMP=$(date +"%Y_%m_%d-%H%M%S")
-        mv main.pdf "elec4402-formula-sheet_$TIMESTAMP.pdf"
-        echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+      - name: Add timestamp to PDF
+        run: |
+          TIMESTAMP=$(date +"%Y_%m_%d-%H%M%S")
+          mv main.pdf "elec4402-formula-sheet_$TIMESTAMP.pdf"
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
 
-    - name: Upload PDF artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: elec4402-formula-sheet_${{ env.REVISION }}.pdf
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: elec4402-formula-sheet_${{ env.REVISION }}.pdf
         path: elec4402-formula-sheet_${{ env.REVISION }}.pdf
         if-no-files-found: error
 
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
         draft: true
         prerelease: true
 
-    - name: Upload PDF to Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+      - name: Upload PDF to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: elec4402-formula-sheet_${{ env.REVISION }}.pdf
         asset_name: elec4402-formula-sheet_${{ env.REVISION }}.pdf
         asset_content_type: application/pdf
