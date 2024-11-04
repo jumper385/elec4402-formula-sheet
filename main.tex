@@ -149,6 +149,30 @@ $$
 
 \section{Frequency Modulation (FM) Formulae}
 
+\subsection{FM Modulation Representation}
+\[
+    s(t) = A_c \cdot cos(2 \pi f_c t + \beta cos(2 \pi f_m t))
+\]
+\noindent Where:
+\begin{itemize}
+	\item $A_c$: Carrier Amplitude
+	\item $f_c$: Carrier Frequency
+	\item $f_m$: Modulation Frequency
+	\item $\beta$: Modulation Index
+\end{itemize}
+
+\subsection{Arbitrary Representation of FM Signals}
+\[
+    s(t) = A_c \cdot cos\left[2 \pi f_c t + 2\pi k_f \int_{0}^{t} m(\tau) \, dt\right]
+\]
+\noindent Where:
+\begin{itemize}
+	\item $A_c$: Carrier Amplitude
+	\item $f_c$: Carrier Frequency
+    \item $m(\tau)$: The baseband message signal
+	\item $k_a$: The frequency sensitivity of the signal
+\end{itemize}
+
 \subsection{FM Modulation Index}
 \[
 	\beta = \frac{\Delta f}{f_m} = \frac{k_f A_m}{f_m}
@@ -700,6 +724,8 @@ where \( \alpha \) is the roll-off factor, with \( 0 \leq \alpha \leq 1 \). When
         \( \frac{1}{\pi t} \) & \( -j\cdot\text{sgn}(f) \) \\
         \hline
         \( \delta'(t) \) & \( j2\pi f \) \\
+        \hline
+        Generic Time Shift $f(x-t_0)$ & $F(x)\cdot e^{-j 2 \pi f t_0}$ \\ 
         \hline
     \end{tabular}
     \caption{Basic Fourier Transform Pairs}
