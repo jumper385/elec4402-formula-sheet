@@ -47,7 +47,6 @@ jobs:
         with:
           name: elec4402-formula-sheet_${{ env.REVISION }}.pdf
         path: elec4402-formula-sheet_${{ env.REVISION }}.pdf
-        if-no-files-found: error
 
       - name: Create GitHub Release
         id: create_release
