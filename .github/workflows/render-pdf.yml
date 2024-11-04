@@ -19,22 +19,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-        #    - name: Install TeX Live Full
-        #      run: sudo apt-get update && sudo apt-get install -y texlive-full
-        #
-        #    - name: Build PDF with LaTeX
-        #      run: |
-        #        latexmk -pdf -output-directory=output main.tex
-        #        mv output/main.pdf main.pdf
-
-      - name: Create bump and changelog
-        uses: commitizen-tools/commitizen-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: make fake pdf
+      - name: Install TeX Live Full
+        run: sudo apt-get update && sudo apt-get install -y texlive-full
+  
+      - name: Build PDF with LaTeX
         run: |
-          echo "HELLO" > main.pdf
+          latexmk -pdf -output-directory=output main.tex
+          mv output/main.pdf main.pdf
+
+#      - name: make fake pdf
+#        run: |
+#          echo "HELLO" > main.pdf
 
       - name: Add version tag
         run: |
