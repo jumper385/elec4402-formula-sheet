@@ -306,3 +306,5 @@ TSWLatexianTemp*
 #*Notes.bib
 
 *.bak*
+*.pdf
+*.DS_Store*
